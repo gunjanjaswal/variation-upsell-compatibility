@@ -1,23 +1,24 @@
 # WooCommerce Variation Upsell Compatibility
 
-A WordPress plugin that ensures compatibility between WooCommerce Variation Swatches and WooCommerce Checkout Upsell Funnel plugins, with special support for Hebrew RTL sites.
+A WordPress plugin that ensures compatibility between WooCommerce Variation Swatches and WooCommerce Checkout Upsell Funnel plugins, with support for both standard and RTL sites (including specialized Hebrew RTL support).
 
 ## Description
 
-This plugin addresses compatibility issues between WooCommerce Variation Swatches and WooCommerce Checkout Upsell Funnel plugins, particularly focusing on:
+This plugin addresses compatibility issues between WooCommerce Variation Swatches and WooCommerce Checkout Upsell Funnel plugins, focusing on:
 
-- Fixing RTL layout issues in Hebrew sites
-- Ensuring variation selection works properly in upsell popups
+- Ensuring variation selection works properly in upsell popups for all sites
 - Fixing add-to-cart functionality for variation products in upsell popups
 - Handling special popup structures with radio-based variation swatches
+- Fixing RTL layout issues, with specialized support for Hebrew sites
 
 ## Features
 
-- **Hebrew RTL Support**: Specialized fixes for Hebrew RTL WooCommerce sites
+- **Universal Compatibility**: Works on both standard and RTL sites
 - **Dynamic Popup Detection**: Uses MutationObserver to detect and fix dynamically added popups
 - **Variation Selection Fix**: Ensures variation swatches work correctly in upsell popups
 - **Add-to-Cart Fix**: Fixes add-to-cart functionality for variation products in upsell popups
 - **Special Popup Structure Support**: Handles unique popup structures with radio-based variation swatches
+- **Hebrew RTL Support**: Specialized fixes for Hebrew RTL WooCommerce sites
 
 ## Requirements
 
@@ -34,11 +35,11 @@ This plugin addresses compatibility issues between WooCommerce Variation Swatche
 
 ## How It Works
 
-The plugin automatically detects when both WooCommerce Variation Swatches and WooCommerce Checkout Upsell Funnel are active, and injects the necessary JavaScript fixes to ensure they work together properly, especially in RTL environments.
+The plugin automatically detects when both WooCommerce Variation Swatches and WooCommerce Checkout Upsell Funnel are active, and injects the necessary JavaScript fixes to ensure they work together properly on all sites.
 
 Key components:
-- `hebrew-rtl-fix.js`: Fixes for Hebrew RTL sites
-- `variation-upsell-fix.js`: General compatibility fixes for variation upsells
+- `variation-upsell-fix.js`: General compatibility fixes for variation upsells on all sites
+- `hebrew-rtl-fix.js`: Additional specialized fixes for Hebrew RTL sites
 
 ## Troubleshooting
 
