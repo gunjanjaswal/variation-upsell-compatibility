@@ -222,6 +222,13 @@ function fixHebrewVariationSwatches($popup, productId) {
     if ($radioInputs.length) {
         console.log('🔧 Found ' + $radioInputs.length + ' radio inputs to fix');
         
+        // Add a simple style tag for radio button styling
+        if (!$('#hebrew-rtl-radio-styles').length) {
+            $('<style id="hebrew-rtl-radio-styles">' + 
+              '.selected.active.vi-active.wvs-selected-item input[type="radio"] {accent-color:#000000}' +
+              '</style>').appendTo('head');
+        }
+        
         // Make all radio buttons visible and clickable
         $radioInputs.css({
             'opacity': '1',
@@ -232,13 +239,8 @@ function fixHebrewVariationSwatches($popup, productId) {
             'z-index': '100'
         });
         
-        // Add a style tag for radio button styling if it doesn't exist
-        if (!$('#hebrew-rtl-radio-styles').length) {
-            $('<style id="hebrew-rtl-radio-styles">' + 
-              '.selected.active.vi-active.wvs-selected-item input[type="radio"], ' +
-              'input[type="radio"]:checked {accent-color:#000000 !important; color:#000000 !important;}' +
-              '</style>').appendTo('head');
-        }
+        // Check radio buttons in selected items
+        $popup.find('.selected.active.vi-active.wvs-selected-item .variable-item-radio-input').prop('checked', true);
         
         // Fix click handlers for each radio item
         $radioInputs.each(function() {
@@ -311,6 +313,18 @@ function fixHebrewVariationSwatches($popup, productId) {
                 // Uncheck all other radios and check this one
                 $popup.find('.variable-item-radio-input').prop('checked', false);
                 $clickedRadio.prop('checked', true);
+                
+                // Make sure the radio is checked
+                $clickedRadio.prop('checked', true);
+                
+                // Make sure the radio is visible
+                $clickedRadio.css({
+                    'opacity': '1',
+                    'visibility': 'visible'
+                });
+                
+                // Reset other radio buttons
+                $popup.find('.variable-item-radio-input').not($clickedRadio).prop('checked', false);
                         
                 // Update classes on parent items
                 $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
