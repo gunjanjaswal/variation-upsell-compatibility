@@ -257,7 +257,7 @@ function fixHebrewVariationSwatches($popup, productId) {
             $item.data('attribute_name', $select.attr('data-attribute_name'));
             $item.data('attribute_value', attributeValue);
             
-            // Create a handler function for both radio and label clicks
+            // Create a handler function for both radio and label clicks with optimized performance
             var handleVariationClick = function(e) {
                 console.log('🔧 Hebrew radio swatch clicked:', attributeValue);
                 
@@ -265,24 +265,23 @@ function fixHebrewVariationSwatches($popup, productId) {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Mark as selected - add all possible selection classes
+                // Immediately update UI state
                 $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
                 $item.addClass('selected active vi-active wvs-selected-item');
+                $popup.find('.variable-item-radio-input').prop('checked', false);
+                $radio.prop('checked', true);
                 
-                // Check the radio and ensure it's visible
-                $radio.prop('checked', true).css({
-                    'opacity': '1',
-                    'visibility': 'visible',
-                    'pointer-events': 'auto'
-                });
-                
-                // Update the select if it exists
+                // Update the select without triggering change event immediately
                 if ($select.length) {
-                    console.log('🔧 Setting select value to:', attributeValue);
-                    $select.val(attributeValue).trigger('change');
+                    $select.val(attributeValue);
+                    // Use setTimeout with 0ms delay to push change event to the end of the event queue
+                    // This makes the UI update immediately while delaying the potentially heavy change event
+                    setTimeout(function() {
+                        $select.trigger('change');
+                    }, 0);
                 }
                 
-                // Enable the add to cart button - support multiple button selectors
+                // Enable the add to cart button immediately
                 var $addToCartBtn = $popup.find('.vi-wcuf-swatches-control-footer-bt-ok, .single_add_to_cart_button, .add_to_cart_button');
                 $addToCartBtn.removeClass('disabled').prop('disabled', false).attr('aria-disabled', 'false');
                 
@@ -301,44 +300,39 @@ function fixHebrewVariationSwatches($popup, productId) {
             // Remove existing click handlers and add our own
             $label.off('click').on('click', handleVariationClick);
             
-            // Special handler for direct radio clicks - use native event handling
+            // Special handler for direct radio clicks with immediate response
             $radio.off('click').on('click', function(e) {
+                // Prevent any default behavior or event bubbling
+                e.preventDefault();
+                e.stopPropagation();
+                
                 // Get the actual clicked radio
                 var $clickedRadio = $(this);
                 var $clickedItem = $clickedRadio.closest('.variable-item');
                 var clickedValue = $clickedRadio.attr('data-value') || $clickedRadio.val();
                         
                 console.log('🔧 Direct radio input clicked:', clickedValue);
-                        
-                // Uncheck all other radios and check this one
+                
+                // Immediately update UI state
+                $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
+                $clickedItem.addClass('selected active vi-active wvs-selected-item');
                 $popup.find('.variable-item-radio-input').prop('checked', false);
                 $clickedRadio.prop('checked', true);
                 
-                // Make sure the radio is checked
-                $clickedRadio.prop('checked', true);
-                
-                // Make sure the radio is visible
-                $clickedRadio.css({
-                    'opacity': '1',
-                    'visibility': 'visible'
-                });
-                
-                // Reset other radio buttons
-                $popup.find('.variable-item-radio-input').not($clickedRadio).prop('checked', false);
-                        
-                // Update classes on parent items
-                $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
-                $clickedItem.addClass('selected active vi-active wvs-selected-item');
-                        
-                // Update the select
+                // Update the select immediately
                 if ($select.length) {
-                    console.log('🔧 Setting select value to:', clickedValue);
-                    $select.val(clickedValue).trigger('change');
+                    $select.val(clickedValue);
+                    // Use setTimeout to delay the change event trigger slightly
+                    setTimeout(function() {
+                        $select.trigger('change');
+                    }, 0);
                 }
-                        
-                // Enable the add to cart button
+                
+                // Enable the add to cart button immediately
                 var $addToCartBtn = $popup.find('.vi-wcuf-swatches-control-footer-bt-ok, .single_add_to_cart_button, .add_to_cart_button');
                 $addToCartBtn.removeClass('disabled').prop('disabled', false).attr('aria-disabled', 'false');
+                
+                return false; // Prevent event bubbling
             });
             
             // Also handle clicks on the entire variable item
