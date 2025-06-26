@@ -222,6 +222,24 @@ function fixHebrewVariationSwatches($popup, productId) {
     if ($radioInputs.length) {
         console.log('🔧 Found ' + $radioInputs.length + ' radio inputs to fix');
         
+        // Make all radio buttons visible and clickable
+        $radioInputs.css({
+            'opacity': '1',
+            'visibility': 'visible',
+            'display': 'inline-block',
+            'pointer-events': 'auto',
+            'position': 'relative',
+            'z-index': '100'
+        });
+        
+        // Add a style tag for radio button styling if it doesn't exist
+        if (!$('#hebrew-rtl-radio-styles').length) {
+            $('<style id="hebrew-rtl-radio-styles">' + 
+              '.selected.active.vi-active.wvs-selected-item input[type="radio"], ' +
+              'input[type="radio"]:checked {accent-color:#000000 !important; color:#000000 !important;}' +
+              '</style>').appendTo('head');
+        }
+        
         // Fix click handlers for each radio item
         $radioInputs.each(function() {
             var $radio = $(this);
@@ -237,32 +255,108 @@ function fixHebrewVariationSwatches($popup, productId) {
             $item.data('attribute_name', $select.attr('data-attribute_name'));
             $item.data('attribute_value', attributeValue);
             
-            // Remove existing click handlers and add our own
-            $label.off('click').on('click', function(e) {
+            // Create a handler function for both radio and label clicks
+            var handleVariationClick = function(e) {
                 console.log('🔧 Hebrew radio swatch clicked:', attributeValue);
                 
                 // Prevent default behavior
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Mark as selected
-                $popup.find('.variable-item').removeClass('selected');
-                $item.addClass('selected');
+                // Mark as selected - add all possible selection classes
+                $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
+                $item.addClass('selected active vi-active wvs-selected-item');
                 
-                // Check the radio
-                $radio.prop('checked', true);
+                // Check the radio and ensure it's visible
+                $radio.prop('checked', true).css({
+                    'opacity': '1',
+                    'visibility': 'visible',
+                    'pointer-events': 'auto'
+                });
                 
-                // Update the select
+                // Update the select if it exists
                 if ($select.length) {
                     console.log('🔧 Setting select value to:', attributeValue);
                     $select.val(attributeValue).trigger('change');
                 }
                 
-                // Enable the add to cart button
-                var $addToCartBtn = $popup.find('.vi-wcuf-swatches-control-footer-bt-ok');
-                $addToCartBtn.removeClass('disabled').prop('disabled', false);
+                // Enable the add to cart button - support multiple button selectors
+                var $addToCartBtn = $popup.find('.vi-wcuf-swatches-control-footer-bt-ok, .single_add_to_cart_button, .add_to_cart_button');
+                $addToCartBtn.removeClass('disabled').prop('disabled', false).attr('aria-disabled', 'false');
                 
                 return false;
+            };
+            
+            // Make sure radio is visible and clickable
+            $radio.css({
+                'opacity': '1',
+                'visibility': 'visible',
+                'pointer-events': 'auto',
+                'position': 'relative',
+                'z-index': '10'
+            });
+            
+            // Remove existing click handlers and add our own
+            $label.off('click').on('click', handleVariationClick);
+            
+            // Special handler for direct radio clicks - use native event handling
+            $radio.off('click').on('click', function(e) {
+                // Get the actual clicked radio
+                var $clickedRadio = $(this);
+                var $clickedItem = $clickedRadio.closest('.variable-item');
+                var clickedValue = $clickedRadio.attr('data-value') || $clickedRadio.val();
+                        
+                console.log('🔧 Direct radio input clicked:', clickedValue);
+                        
+                // Uncheck all other radios and check this one
+                $popup.find('.variable-item-radio-input').prop('checked', false);
+                $clickedRadio.prop('checked', true);
+                        
+                // Update classes on parent items
+                $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
+                $clickedItem.addClass('selected active vi-active wvs-selected-item');
+                        
+                // Update the select
+                if ($select.length) {
+                    console.log('🔧 Setting select value to:', clickedValue);
+                    $select.val(clickedValue).trigger('change');
+                }
+                        
+                // Enable the add to cart button
+                var $addToCartBtn = $popup.find('.vi-wcuf-swatches-control-footer-bt-ok, .single_add_to_cart_button, .add_to_cart_button');
+                $addToCartBtn.removeClass('disabled').prop('disabled', false).attr('aria-disabled', 'false');
+            });
+            
+            // Also handle clicks on the entire variable item
+            $item.off('click').on('click', function(e) {
+                // Only handle if the click was not on the radio button itself (that has its own handler)
+                if (!$(e.target).is('.variable-item-radio-input')) {
+                    console.log('🔧 Hebrew radio swatch clicked:', attributeValue);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Mark as selected
+                    $popup.find('.variable-item').removeClass('selected active vi-active wvs-selected-item');
+                    $item.addClass('selected active vi-active wvs-selected-item');
+                    
+                    // Uncheck all other radios and check this one
+                    $popup.find('.variable-item-radio-input').prop('checked', false);
+                    $radio.prop('checked', true);
+                    
+                    // Make sure the radio is checked
+                    $radio.prop('checked', true);
+                    
+                    // Update the select
+                    if ($select.length) {
+                        console.log('🔧 Setting select value to:', attributeValue);
+                        $select.val(attributeValue).trigger('change');
+                    }
+                    
+                    // Enable the add to cart button
+                    var $addToCartBtn = $popup.find('.vi-wcuf-swatches-control-footer-bt-ok, .single_add_to_cart_button, .add_to_cart_button');
+                    $addToCartBtn.removeClass('disabled').prop('disabled', false).attr('aria-disabled', 'false');
+                    return false;
+                }
             });
         });
         
