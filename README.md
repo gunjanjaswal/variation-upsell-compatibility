@@ -15,7 +15,7 @@ This plugin addresses compatibility issues between WooCommerce Variation Swatche
 
 - **Universal Compatibility**: Works on both standard and RTL sites
 - **Dynamic Popup Detection**: Uses MutationObserver to detect and fix dynamically added popups
-- **Variation Selection Fix**: Ensures variation swatches work correctly in upsell popups
+- **Variation Selection Fix**: Ensures all types of variation swatches (radio, button, color, image) work correctly in upsell popups
 - **Add-to-Cart Fix**: Fixes add-to-cart functionality for variation products in upsell popups
 - **Special Popup Structure Support**: Handles unique popup structures with radio-based variation swatches
 - **Hebrew RTL Support**: Specialized fixes for Hebrew RTL WooCommerce sites
@@ -39,7 +39,19 @@ The plugin automatically detects when both WooCommerce Variation Swatches and Wo
 
 Key components:
 - `variation-upsell-fix.js`: General compatibility fixes for variation upsells on all sites
-- `hebrew-rtl-fix.js`: Additional specialized fixes for Hebrew RTL sites
+- `hebrew-rtl-fix.js`: Additional specialized fixes for Hebrew RTL sites with support for all variation swatch types (radio, button, color, image)
+
+### Hebrew RTL Support Details
+
+The Hebrew RTL fix provides specialized support for:
+
+- **Radio Button Swatches**: Ensures radio inputs are visible and properly selectable
+- **Button Swatches**: Fixes selection state and click handling
+- **Color Swatches**: Ensures proper selection and visual feedback
+- **Image Swatches**: Maintains proper selection state and click handling
+- **Select Dropdowns**: Properly updates hidden select elements
+
+All variation types benefit from optimized click handling and immediate visual feedback, ensuring a smooth user experience in Hebrew RTL environments.
 
 ## Troubleshooting
 
